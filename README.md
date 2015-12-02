@@ -50,3 +50,10 @@ renderer = JsonRenderer()
 parse_procedure(json_procedure, renderer)
 '{"id": 1, "result": null, "jsonrpc": "2.0"}'
 ```
+
+
+To Do List
+----------
+* Add method parameter specifications
+* Add support for batch requests
+* Add support for batch responses

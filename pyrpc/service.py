@@ -2,12 +2,16 @@ import functools
 
 from pyrpc.exceptions import DuplicatedMethodError
 from pyrpc.exceptions import DuplicatedServiceError
+from pyrpc.exceptions import RPCMethodNotFound
 
 __SERVICES = {}
 
 
 def get_service(name):
-    return __SERVICES.get(name)
+    service = __SERVICES.get(name)
+    if service is None:
+        raise RPCMethodNotFound
+    return service
 
 
 def add_service(service):
@@ -33,6 +37,7 @@ class Service(object):
 
         :param method: name of the method
         :param func: callable object
+        :raises DuplicatedMethodError: if the method name is already registered
         """
         if method in self.methods:
             msg = 'method %s already register for %s' % (method, self.name)
@@ -43,7 +48,7 @@ class Service(object):
 
         self.methods[method] = func
 
-    def async_method(self, method):
+    def method(self, method):
         """Decorator for registering new service method.
 
         :param method: name of the method
@@ -61,8 +66,11 @@ class Service(object):
         :param socket: websocket instance
         :param id_: call id
         :param params: method parameters
+        :raises RPCMethodNotFound: if the method does not exist
         """
-        func = self.methods[method]
+        func = self.methods.get(method)
+        if func is None:
+            raise RPCMethodNotFound
         return func(request)
 
 

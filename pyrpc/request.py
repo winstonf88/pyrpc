@@ -1,9 +1,11 @@
 import logging
 
-from pyrpc.exceptions import RPCError
+from pyrpc.exceptions import RPCError, RPCInvalidRequest
 from pyrpc.service import get_service
 
 log = logging.getLogger('pyrpc')
+
+_marker = object()
 
 
 def parse_procedure(procedure, renderer, **kw):
@@ -14,15 +16,11 @@ def parse_procedure(procedure, renderer, **kw):
     :param kw: arguments are passed into the request object
     :return: rpc response
     """
+    # TODO: add support for batch requests
     response = {'jsonrpc': '2.0', 'id': None}
     try:
         procedure = renderer.deserialize(procedure)
-        request = RPCRequest(
-            method=procedure.get('method'),
-            params=procedure.get('params'),
-            id_=procedure.get('id'),
-            **kw
-        )
+        request = make_request(procedure, **kw)
         response['id'] = request.rpc_id
         service_name, method = request.rpc_method.split('.')
         service = get_service(service_name)
@@ -31,11 +29,31 @@ def parse_procedure(procedure, renderer, **kw):
         response['error'] = err.as_dict()
     except Exception as err:
         log.error(str(err))
+        raise
         response['error'] = RPCError().as_dict()
     else:
         response['result'] = result
 
     return renderer.serialize(response)
+
+
+def make_request(procedure, **kw):
+    """Make new request object based on the procedure.
+
+    :param procedure: rpc procedure
+    :param kw: arguments are passed into the request object
+    :return: RPCRequest instance
+    :raises RPCInvalidRequest: if the procedure does not specify all the
+        necessary data
+    """
+    method = procedure.get('method')
+    params = procedure.get('params', _marker)
+    if not method or params is _marker:
+        raise RPCInvalidRequest
+
+    id_ = procedure.get('id')
+    request = RPCRequest(method, params, id_, **kw)
+    return request
 
 
 class RPCRequest(object):

@@ -12,5 +12,4 @@ class JsonRPCWebsocketHandler(tornado.websocket.WebSocketHandler):
     @tornado.gen.coroutine
     def on_message(self, message):
         response = parse_procedure(message, self.renderer, socket=self)
-        print(response)
         self.write_message(response)
