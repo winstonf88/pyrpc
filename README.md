@@ -1,13 +1,13 @@
 # Python Remote Procedure Call Library
 
+[![Build Status](https://travis-ci.org/winstonf88/pyrpc.svg?branch=master)](https://travis-ci.org/winstonf88/pyrpc)
+[![Coverage Status](https://coveralls.io/repos/winstonf88/pyrpc/badge.svg?branch=master&service=github)](https://coveralls.io/github/winstonf88/pyrpc?branch=master)
+
 **PyRPC** provides helpers to build and execute RPC applications.
 
 This library is an implementation of the new 2.0 specifications.
 
 > Currently, only JSON is supported.
-
-[![Build Status](https://travis-ci.org/winstonf88/pyrpc.svg?branch=master)](https://travis-ci.org/winstonf88/pyrpc)
-[![Coverage Status](https://coveralls.io/repos/winstonf88/pyrpc/badge.svg?branch=master&service=github)](https://coveralls.io/github/winstonf88/pyrpc?branch=master)
 
 Usage
 -----
