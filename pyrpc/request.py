@@ -29,7 +29,6 @@ def parse_procedure(procedure, renderer, **kw):
         response['error'] = err.as_dict()
     except Exception as err:
         log.error(str(err))
-        raise
         response['error'] = RPCError().as_dict()
     else:
         response['result'] = result

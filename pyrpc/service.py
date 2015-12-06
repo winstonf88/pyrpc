@@ -20,6 +20,11 @@ def add_service(service):
     __SERVICES[service.name] = service
 
 
+def remove_service(service):
+    if service.name in __SERVICES:
+        __SERVICES.pop(service.name)
+
+
 class Service(object):
     """Remote Procedure Call Service."""
 
